@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not Hesaplama</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --text-color: #333;
+            --bg-color: #f9f9f9;
+            --card-bg: #fff;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .dark-mode {
+            --primary-color: #5cbf80;
+            --secondary-color: #27ae60;
+            --accent-color: #ff3650;
+            --light-color: #34495e;
+            --dark-color: #27ae60;
+            --text-color: #f5f5f5;
+            --bg-color: #2c3e50;
+            --card-bg: #34495e;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: var(--transition);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .home-settings-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+        }
+
+        .home-btn, .theme-toggle-btn, .details-btn {
+            background-color: var(--primary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .theme-toggle-btn, .details-btn {
+            width: auto;
+            padding: 0 15px;
+            border-radius: 25px;
+            gap: 8px;
+        }
+
+        .theme-toggle-btn span, .details-btn span {
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .theme-toggle-btn i, .details-btn i {
+            font-size: 1.2rem;
+        }
+
+        .home-btn:hover, .theme-toggle-btn:hover, .details-btn:hover {
+            transform: translateY(-3px);
+            background-color: var(--secondary-color);
+        }
+
+        .details-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 100px auto 50px;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .average-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .average-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin: 10px 0;
+        }
+
+        .result-text {
+            margin-top: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .tebrik-takdir {
+            color: #FFA500;
+        }
+
+        .tebrik-tesekkur {
+            color: #2ecc71;
+        }
+
+        .uyari {
+            color: #e74c3c;
+        }
+
+        .courses-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .course-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .course-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .course-coefficient {
+            background-color: var(--primary-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .course-name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .course-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .course-input input {
+            width: 80px;
+            padding: 8px 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1rem;
+            transition: var(--transition);
+            -moz-appearance: textfield;
+        }
+
+        .course-input input::-webkit-outer-spin-button,
+        .course-input input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .course-input input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+        }
+
+        .invalid-input {
+            border-color: var(--accent-color) !important;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Modal Stilleri */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .grade-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .grade-table th {
+            text-align: left;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .grade-table td {
+            padding: 10px 0;
+        }
+
+        .grade-table input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .detail-result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(46, 204, 113, 0.1);
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Partikül animasyonları */
+           .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+            z-index: 999;
+            animation: confetti-fall 3s ease-in forwards;
+            top: -10px;
+        }
+
+        .ribbon {
+            position: fixed;
+            width: 15px;
+            height: 100px;
+            opacity: 0;
+            z-index: 999;
+            animation: ribbon-fall 3s ease-in forwards;
+            top: -100px;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes ribbon-fall {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 80px;
+                padding: 15px;
+            }
+            
+            .course-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .course-input {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .modal-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="home-settings-container">
+        <button class="home-btn" onclick="window.location.href='index.html'">
+            <i class="fas fa-home"></i>
+        </button>
+        <button class="theme-toggle-btn" id="themeToggleBtn">
+            <i class="fas fa-sun"></i>
+            <span>Tema</span>
+        </button>
+    </div>
+
+    <button class="details-btn" id="detailsBtn">
+        <i class="fas fa-calculator"></i>
+        <span>Detay</span>
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1 id="gradeTitle">9. Sınıf Takdir Teşekkür Hesaplama</h1>
+            <p>Ders notlarınızı girin, ortalamanızı hesaplayalım</p>
+        </div>
+
+        <div class="average-container">
+            <h3>TOPLAM ORTALAMA</h3>
+            <div class="average-value" id="averageValue">0.00</div>
+            <div class="result-text" id="resultText"></div>
+        </div>
+
+        <div class="courses-container">
+            <h3>DERSLER</h3>
+            
+           <div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Beden Eğitimi</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="pe-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Biyoloji</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="biology-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Coğrafya</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="geography-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Din Kültürü</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="religion-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Fizik</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="physics-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Görsel Sanatlar</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="art-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">İkinci Yabancı Dil</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="german-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Kimya</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="chemistry-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">6</div>
+        <div class="course-name">Matematik</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="math-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">1</div>
+        <div class="course-name">Sağlık Bilgisi</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="health-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Spor Eğitimi</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="sport-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Proje Tasarım</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="project-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">1</div>
+        <div class="course-name">Temel Din Bilgileri</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="basic-religion-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">2</div>
+        <div class="course-name">Tarih</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="history-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">5</div>
+        <div class="course-name">Türk Dili ve Edebiyatı</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="literature-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+<div class="course-item">
+    <div class="course-info">
+        <div class="course-coefficient">4</div>
+        <div class="course-name">Birinci Yabancı Dil</div>
+    </div>
+    <div class="course-input">
+        <input type="number" min="0" max="100" placeholder="Not" id="english-grade" class="grade-input">
+        <span>puan</span>
+    </div>
+</div>
+
+    <!-- Detay Modal -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Detaylı Not Girişi</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            
+            <table class="grade-table">
+                <tr>
+                    <th colspan="2">Notlar</th>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="number" id="yazili1" min="0" max="100" placeholder="1.Sınav">
+                    </td>
+                    <td>
+                        <input type="number" id="yazili2" min="0" max="100" placeholder="2.Sınav">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="number" id="sozlu1" min="0" max="100" placeholder="1.Sözlü">
+                    </td>
+                    <td>
+                        <input type="number" id="sozlu2" min="0" max="100" placeholder="2.Sözlü">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="number" id="proje" min="0" max="100" placeholder="Proje(Varsa)">
+                    </td>
+                </tr>
+            </table>
+            
+            <div id="detailResult" class="detail-result">Ortalama: 0.00</div>
+        </div>
+    </div>
+
+    <audio id="celebrationSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+
+    <script>
+        // URL'den sınıf bilgisini al
+        const urlParams = new URLSearchParams(window.location.search);
+        const grade = urlParams.get('grade');
+        const branch = urlParams.get('branch');
+        
+        // Başlığı güncelle
+        if (grade) {
+            let title = `${grade}. Sınıf`;
+            if (branch) {
+                const branchNames = {
+                    'sayisal': 'Sayısal',
+                    'esitagirlik': 'Eşit Ağırlık',
+                    'dil': 'Dil'
+                };
+                title += ` ${branchNames[branch]}`;
+            }
+            title += ' Takdir Teşekkür Hesaplama';
+            document.getElementById('gradeTitle').textContent = title;
+        }
+        
+        // Tema değiştirme fonksiyonu
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            const themeIcon = document.querySelector('#themeToggleBtn i');
+            
+            if (isDark) {
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('darkMode', 'true');
+            } else {
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('darkMode', 'false');
+            }
+        }
+        
+        // Tema butonuna tıklama
+        document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
+        
+        // Sayfa yüklendiğinde tema ayarını yükle
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('#themeToggleBtn i').classList.replace('fa-sun', 'fa-moon');
+        }
+        
+        // Partikül efekti oluşturma
+        function createConfetti(color) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.backgroundColor = color;
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.width = Math.random() * 10 + 5 + 'px';
+            confetti.style.height = Math.random() * 10 + 5 + 'px';
+            document.body.appendChild(confetti);
+            
+            // Partikülü temizle
+            setTimeout(() => {
+                confetti.remove();
+            }, 3000);
+        }
+        
+        // Şerit efekti oluşturma
+        function createRibbon(color) {
+            const ribbon = document.createElement('div');
+            ribbon.className = 'ribbon';
+            ribbon.style.backgroundColor = color;
+            ribbon.style.left = Math.random() * window.innerWidth + 'px';
+            ribbon.style.width = Math.random() * 15 + 10 + 'px';
+            ribbon.style.height = Math.random() * 100 + 50 + 'px';
+            document.body.appendChild(ribbon);
+            
+            // Şeriti temizle
+            setTimeout(() => {
+                ribbon.remove();
+            }, 3000);
+        }
+        
+        // Kutlama sesi çal
+        function playCelebrationSound() {
+            const sound = document.getElementById('celebrationSound');
+            sound.currentTime = 0;
+            sound.play();
+        }
+        
+        // Modal işlemleri
+        const modal = document.getElementById('detailsModal');
+        const btn = document.getElementById('detailsBtn');
+        const span = document.getElementById('closeModal');
+        
+        btn.onclick = function() {
+            modal.style.display = 'flex';
+        }
+        
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Detaylı hesaplama fonksiyonu (otomatik hesaplama)
+        function calculateDetailedAverage() {
+            const inputs = [
+                document.getElementById('yazili1'),
+                document.getElementById('yazili2'),
+                document.getElementById('sozlu1'),
+                document.getElementById('sozlu2'),
+                document.getElementById('proje')
+            ];
+            
+            let total = 0;
+            let count = 0;
+            
+            inputs.forEach(input => {
+                // 100'den büyük veya negatif değerleri boş bırak
+                if (input.value && (parseFloat(input.value) > 100 || parseFloat(input.value) < 0)) {
+                    input.value = '';
+                    return;
+                }
+                
+                if (input.value && input.value.trim() !== '') {
+                    total += parseFloat(input.value);
+                    count++;
+                }
+            });
+            
+            // Eğer hiç not girilmemişse
+            if (count === 0) {
+                document.getElementById('detailResult').textContent = "Lütfen 100'den az bir not giriniz";
+                return;
+            }
+            
+            // Ortalamayı hesapla
+            const average = total / count;
+            document.getElementById('detailResult').textContent = `Ortalama: ${average.toFixed(2)}`;
+        }
+        
+        // Detaylı not inputlarını dinle
+        document.querySelectorAll('#detailsModal input').forEach(input => {
+            input.addEventListener('input', calculateDetailedAverage);
+        });
+        
+        // Otomatik ortalama hesaplama fonksiyonu
+        function calculateAverage() {
+            const inputs = [
+                {id: 'math-grade', hours: 6},
+                {id: 'literature-grade', hours: 5},
+                {id: 'english-grade', hours: 4},
+                {id: 'german-grade', hours: 2},
+                {id: 'pe-grade', hours: 2},
+                {id: 'biology-grade', hours: 2},
+                {id: 'geography-grade', hours: 2},
+                {id: 'religion-grade', hours: 2},
+                {id: 'art-grade', hours: 2},
+				{id: 'sport-grade', hours: 2},
+                {id: 'chemistry-grade', hours: 2},
+                {id: 'project-grade', hours: 2},
+                {id: 'health-grade', hours: 1},
+                {id: 'history-grade', hours: 2},
+                {id: 'basic-religion-grade', hours: 1}
+            ];
+            
+            let totalWeighted = 0;
+            let totalHours = 0;
+            let hasFailingGrade = false;
+            let allGradesEntered = true;
+            
+            inputs.forEach(item => {
+                const input = document.getElementById(item.id);
+                const value = input.value.trim();
+                
+                // 100'den büyük veya negatif değerleri boş bırak
+                if (value !== '' && (parseFloat(value) > 100 || parseFloat(value) < 0)) {
+                    input.value = '';
+                    allGradesEntered = false;
+                    return;
+                }
+                
+                // Eğer boşsa hesaplamaya katma ve tüm notlar girilmemiş demektir
+                if (value === '') {
+                    allGradesEntered = false;
+                    return;
+                }
+                
+                const grade = parseFloat(value);
+                
+                // 50'nin altında not kontrolü
+                if (grade < 50) {
+                    hasFailingGrade = true;
+                }
+                
+                totalWeighted += grade * item.hours;
+                totalHours += item.hours;
+            });
+            
+            // Ortalamayı hesapla (tüm notlar girilmişse)
+            const average = totalHours > 0 ? totalWeighted / totalHours : 0;
+    document.getElementById('averageValue').textContent = average.toFixed(2);
+            
+            // Sonucu göster
+            document.getElementById('averageValue').textContent = average.toFixed(2);
+            
+            // Sonuç metnini oluştur
+            let resultText = '';
+            let resultClass = '';
+            
+            if (allGradesEntered) {
+                if (hasFailingGrade) {
+                    resultText = '50\'NİN ALTINDA NOTUNUZ VAR! BELGE ALAMAZSINIZ ⚠️';
+                    resultClass = 'uyari';
+                } else if (average >= 85) {
+                    resultText = 'TEBRİKLER! TAKDİR ALDINIZ 🎉';
+                    resultClass = 'tebrik-takdir';
+                    
+                    // Turuncu partikül efekti ve ses
+                    playCelebrationSound();
+                    for (let i = 0; i < 100; i++) {
+                        setTimeout(() => {
+                            createConfetti('#FFA500');
+                        }, i * 30);
+                    }
+                } else if (average >= 70) {
+                    resultText = 'TEBRİKLER! TEŞEKKÜR ALDINIZ 👍';
+                    resultClass = 'tebrik-tesekkur';
+                    
+                    // Yeşil şerit efekti ve ses
+                    playCelebrationSound();
+                    for (let i = 0; i < 100; i++) {
+                        setTimeout(() => {
+                            createConfetti('#2ecc71');
+                        }, i * 30);
+                    }
+                } else {
+                    resultText = 'Daha çok çalışmalısınız 💪';
+                }
+            } else {
+                resultText = 'Tüm notları giriniz...';
+            }
+            
+            const resultElement = document.getElementById('resultText');
+            resultElement.textContent = resultText;
+            resultElement.className = 'result-text ' + resultClass;
+        }
+        
+        // Input değişikliklerini dinle
+        document.querySelectorAll('.grade-input').forEach(input => {
+            input.addEventListener('input', function() {
+                // Ortalamayı hesapla
+                calculateAverage();
+            });
+        });
+        
+        // Sayfa yüklendiğinde ortalama hesaplamasını yap
+        calculateAverage();
+    </script>
+</body>
+</html>
