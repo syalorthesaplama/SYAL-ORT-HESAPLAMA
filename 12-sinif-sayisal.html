@@ -759,9 +759,13 @@
         }
         
         // Detaylı not inputlarını dinle
-        document.querySelectorAll('#detailsModal input').forEach(input => {
-            input.addEventListener('input', calculateDetailedAverage);
-        });
+       document.querySelectorAll('#detailsModal input').forEach(input => {
+    input.addEventListener('input', function () {
+        calculateDetailedAverage();
+        saveGradesToLocalStorage();
+    });
+});
+
         
         // Otomatik ortalama hesaplama fonksiyonu
        function calculateAverage() {
@@ -877,3 +881,4 @@
 </body>
 
 </html>
+
