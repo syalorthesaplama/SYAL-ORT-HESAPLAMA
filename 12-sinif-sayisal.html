@@ -620,6 +620,66 @@
     <audio id="celebrationSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
 
     <script>
+/* ===============================
+   LOCAL STORAGE – NOT KAYDETME
+   =============================== */
+
+function saveGradesToLocalStorage() {
+    const grades = {};
+
+    // Ana ders notları
+    document.querySelectorAll('.grade-input').forEach(input => {
+        grades[input.id] = input.value;
+    });
+
+    // Detay modal notları
+    const detailIds = ['yazili1', 'yazili2', 'sozlu1', 'sozlu2', 'proje'];
+    detailIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) grades[id] = el.value;
+    });
+
+    localStorage.setItem('gradesData', JSON.stringify(grades));
+}
+
+function loadGradesFromLocalStorage() {
+    const saved = localStorage.getItem('gradesData');
+    if (!saved) return;
+
+    const grades = JSON.parse(saved);
+
+    Object.keys(grades).forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = grades[id];
+    });
+
+    calculateAverage();
+    calculateDetailedAverage();
+}
+
+/* ===============================
+   EVENTLER
+   =============================== */
+
+// Ana ders notları
+document.querySelectorAll('.grade-input').forEach(input => {
+    input.addEventListener('input', () => {
+        calculateAverage();
+        saveGradesToLocalStorage();
+    });
+});
+
+// Detay modal notları
+document.querySelectorAll('#detailsModal input').forEach(input => {
+    input.addEventListener('input', () => {
+        calculateDetailedAverage();
+        saveGradesToLocalStorage();
+    });
+});
+
+// Sayfa açılınca notları yükle
+window.addEventListener('DOMContentLoaded', loadGradesFromLocalStorage);
+
         // URL'den sınıf bilgisini al
         const urlParams = new URLSearchParams(window.location.search);
         const grade = urlParams.get('grade');
@@ -881,4 +941,5 @@
 </body>
 
 </html>
+
 
